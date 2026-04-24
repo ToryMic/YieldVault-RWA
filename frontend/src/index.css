@@ -9,6 +9,10 @@
   --accent-cyan: #00f0ff;
   --accent-cyan-dim: rgba(0, 240, 255, 0.2);
   --accent-purple: #7000ff;
+  --accent-green: #00ff7f;
+  --accent-green-dim: rgba(0, 255, 127, 0.2);
+  --accent-amber: #ffbf00;
+  --accent-amber-dim: rgba(255, 191, 0, 0.2);
   
   --text-primary: #ffffff;
   --text-secondary: #94a3b8;
@@ -89,6 +93,10 @@
   --accent-cyan: #0284c7;
   --accent-cyan-dim: rgba(2, 132, 199, 0.1);
   --accent-purple: #7e22ce;
+  --accent-green: #15803d;
+  --accent-green-dim: rgba(21, 128, 61, 0.1);
+  --accent-amber: #b45309;
+  --accent-amber-dim: rgba(180, 83, 9, 0.1);
   
   --text-primary: #0f172a;
   --text-secondary: #475569;
@@ -594,15 +602,42 @@ button {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
+.btn-outline.active {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+
+.tab-button {
+  padding: 12px 20px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.tab-button:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-button.active {
+  color: var(--accent-cyan);
+  border-bottom-color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.05);
+}
+
 /* Animations */
-@keyframes puiseGlow {
+@keyframes pulseGlow {
   0% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.1); }
   50% { box-shadow: 0 0 30px rgba(0, 240, 255, 0.3); }
   100% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.1); }
 }
 
 .animate-glow {
-  animation: puiseGlow 3s infinite;
+  animation: pulseGlow 3s infinite;
 }
 
 /* Form Elements */

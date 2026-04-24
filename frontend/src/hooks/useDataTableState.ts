@@ -1,14 +1,6 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import type { TableSortDirection } from "../components/DataTable";
-
-export interface DataTableState {
-  search: string;
-  sortBy: string;
-  sortDirection: TableSortDirection;
-  page: number;
-  pageSize: number;
-}
+import type { DataTableState, SortDirection } from "../types/table";
 
 interface UseDataTableStateOptions {
   defaultSearch?: string;

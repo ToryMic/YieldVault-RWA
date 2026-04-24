@@ -29,6 +29,8 @@ export const en = {
     rpcPrefix: "RPC:",
     rpcCustom: "Custom",
     rpcDefault: "Default",
+    testnet: "Testnet",
+    mainnet: "Mainnet",
     disconnectAria: "Disconnect Wallet",
     status: {
       connected: "Connected",

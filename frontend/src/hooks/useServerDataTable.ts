@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { DataTableState } from "./useDataTableState";
+import type { DataTableState } from "../types/table";
 
 interface ServerDataTableOptions {
   state: DataTableState;

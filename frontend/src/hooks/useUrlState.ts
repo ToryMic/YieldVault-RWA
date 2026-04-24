@@ -1,7 +1,6 @@
 import { useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-
-export type SortDirection = "asc" | "desc";
+import type { SortDirection } from "../types/table";
 
 export interface UrlStateConfig<TFilters extends Record<string, string>> {
   defaultPage?: number;

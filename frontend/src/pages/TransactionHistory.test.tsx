@@ -100,7 +100,7 @@ describe("TransactionHistory", () => {
     await waitFor(() =>
       expect(mockGetTransactions).toHaveBeenCalledWith({
         walletAddress: WALLET,
-        limit: 10,
+        limit: 100,
         order: "desc",
         type: "all",
       }),

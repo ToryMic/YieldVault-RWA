@@ -29,6 +29,8 @@ export const es = {
     rpcPrefix: "RPC:",
     rpcCustom: "Personalizado",
     rpcDefault: "Predeterminado",
+    testnet: "Testnet",
+    mainnet: "Mainnet",
     disconnectAria: "Desconectar billetera",
     status: {
       connected: "Conectado",

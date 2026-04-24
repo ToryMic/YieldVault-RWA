@@ -3,6 +3,7 @@ import WalletConnect from './WalletConnect';
 import ThemeToggle from './ThemeToggle';
 import { Layers } from './icons';
 import { useTranslation } from '../i18n';
+import NetworkBadge from './NetworkBadge';
 
 interface NavbarProps {
     currentPath: '/' | '/analytics' | '/portfolio';
@@ -115,6 +116,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         <div className="flex items-center gap-md">
+          <NetworkBadge />
           <ThemeToggle />
           <WalletConnect
             walletAddress={walletAddress}

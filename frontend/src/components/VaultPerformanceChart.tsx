@@ -10,17 +10,19 @@ import {
 } from "recharts";
 import { TrendingUp, Activity } from "./icons";
 import { useVaultHistory } from "../hooks/useVaultData";
+import { useVault } from "../context/VaultContext";
 
 type TimeRange = "7D" | "1M" | "3M" | "ALL";
 
 const VaultPerformanceChart: React.FC = () => {
+  const { lastUpdate } = useVault();
   const { data: rawData = [], isLoading } = useVaultHistory();
   const [timeRange, setTimeRange] = useState<TimeRange>("ALL");
 
   const filteredData = useMemo(() => {
     if (!rawData.length) return [];
     
-    const now = new Date("2026-03-25T10:00:00.000Z"); // Use reference date from summary
+    const now = lastUpdate || new Date(); 
     let daysToSubtract = 0;
 
     switch (timeRange) {

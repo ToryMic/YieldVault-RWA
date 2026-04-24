@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 import ApiStatusBanner from "../components/ApiStatusBanner";
 import Badge from "../components/Badge";
 import { DataTable, type DataTableColumn } from "../components/DataTable";
@@ -18,7 +17,7 @@ import {
   type Transaction,
 } from "../lib/transactionApi";
 import { useClientDataTable } from "../hooks/useClientDataTable";
-import { useDataTableState } from "../hooks/useDataTableState";
+import { useUrlState } from "../hooks/useUrlState";
 import { getStellarExplorerUrl } from "../lib/security";
 
 interface TransactionHistoryProps {
@@ -84,21 +83,14 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ApiError | ValidationError | null>(null);
 
-  const { state, setSort, setPage, setPageSize } = useDataTableState({
+  const { state: urlState, setSort, setPage, setPageSize, setFilters } = useUrlState<{ txType: string }>({
     defaultSortBy: "date",
     defaultSortDirection: "desc",
     defaultPageSize: 10,
+    defaultFilters: { txType: "all" },
   });
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const txType = (searchParams.get("txType") ?? "all") as TxTypeFilter;
-
-  const setTxType = (value: TxTypeFilter) => {
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.set("txType", value);
-    nextParams.set("page", "1");
-    setSearchParams(nextParams, { replace: true });
-  };
+  const txType = (urlState.filters.txType ?? "all") as TxTypeFilter;
 
   useEffect(() => {
     if (!walletAddress) {
@@ -111,10 +103,12 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({
       setIsLoading(true);
 
       try {
+        // We fetch a larger limit to allow for client-side searching/paging within a recent window,
+        // while still respecting the server's sort order for the "most recent" transactions.
         const data = await getTransactions({
           walletAddress,
-          limit: state.pageSize,
-          order: state.sortDirection,
+          limit: 100, 
+          order: urlState.sortDirection,
           type: txType,
         });
         if (!isMounted) return;
@@ -139,11 +133,14 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [walletAddress, state.pageSize, state.sortDirection, txType]);
+  }, [walletAddress, urlState.sortDirection, txType]);
 
   const { rows, page, totalItems, totalPages } = useClientDataTable({
     rows: transactions,
-    state,
+    state: {
+      ...urlState,
+      search: "", // Search is not implemented in the UI yet for this page
+    },
     getSearchValue: (row) =>
       `${row.type} ${row.asset ?? ""} ${row.transactionHash}`,
     getSortValue: (row, columnId) => {
@@ -225,7 +222,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                       aria-label="Filter by type"
                       value={txType}
                       onChange={(e) =>
-                        setTxType(e.target.value as TxTypeFilter)
+                        setFilters({ txType: e.target.value })
                       }
                       className="portfolio-select"
                     >
@@ -236,21 +233,6 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                   </div>
                 </label>
 
-                <label className="input-group" style={{ minWidth: "120px" }}>
-                  <span className="text-body-sm">Rows</span>
-                  <div className="input-wrapper">
-                    <select
-                      aria-label="Rows per page"
-                      value={state.pageSize}
-                      onChange={(e) => setPageSize(Number(e.target.value))}
-                      className="portfolio-select"
-                    >
-                      <option value={10}>10</option>
-                      <option value={25}>25</option>
-                      <option value={50}>50</option>
-                    </select>
-                  </div>
-                </label>
               </div>
             </div>
 
@@ -277,16 +259,17 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({
                 rows={rows}
                 rowKey={(row) => row.id}
                 emptyMessage={emptyMessage}
-                sortBy={state.sortBy}
-                sortDirection={state.sortDirection}
+                sortBy={urlState.sortBy}
+                sortDirection={urlState.sortDirection}
                 onSortChange={setSort}
                 pagination={{
                   page,
-                  pageSize: state.pageSize,
+                  pageSize: urlState.pageSize,
                   totalItems,
                   totalPages,
                 }}
                 onPageChange={setPage}
+                onPageSizeChange={setPageSize}
               />
             )}
           </section>
